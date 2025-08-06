@@ -68,24 +68,14 @@ def process_data(save: bool = False) -> dict:
     random.seed(11)
 
     data = {
-        "train": {
-            "mfcc": [],
-            "year_labels": [],
-            "year": [],
-            "driver_labels": [],
-            "driver": [],
-            "circuit_labels": [],
-            "circuit": []
-        },
-        "test": {
-            "mfcc": [],
-            "year_labels": [],
-            "year": [],
-            "driver_labels": [],
-            "driver": [],
-            "circuit_labels": [],
-            "circuit": []
-        },
+        "mfcc": [],
+        "year_labels": [],
+        "year": [],
+        "driver_labels": [],
+        "driver": [],
+        "circuit_labels": [],
+        "circuit": [],
+        "subsets": [],
     }
     SAMPLE_RATE = 22050
     n_mfcc = 13
@@ -140,23 +130,15 @@ def process_data(save: bool = False) -> dict:
                         and circuit != "" 
                         and circuit_label >= 0):
                         accepted_samples += 1
-                        n = random.randint(1, 5)
-                        if n == 5:
-                            data["test"]["mfcc"].append(mfcc)
-                            data["test"]["year_labels"].append(int(year) - 2017)
-                            data["test"]["year"].append(year)
-                            data["test"]["driver_labels"].append(driver_label)
-                            data["test"]["driver"].append(driver)
-                            data["test"]["circuit_labels"].append(circuit_label)
-                            data["test"]["circuit"].append(circuit)
-                        else:
-                            data["train"]["mfcc"].append(mfcc)
-                            data["train"]["year_labels"].append(int(year) - 2017)
-                            data["train"]["year"].append(year)
-                            data["train"]["driver_labels"].append(driver_label)
-                            data["train"]["driver"].append(driver)
-                            data["train"]["circuit_labels"].append(circuit_label)
-                            data["train"]["circuit"].append(circuit)
+                        n = random.randint(1, 6)
+                        data["mfcc"].append(mfcc)
+                        data["year_labels"].append(int(year) - 2017)
+                        data["year"].append(year)
+                        data["driver_labels"].append(driver_label)
+                        data["driver"].append(driver)
+                        data["circuit_labels"].append(circuit_label)
+                        data["circuit"].append(circuit)
+                        data["subsets"].append(n)
                             
     print(f"{accepted_samples}/{total_samples} samples accepted")          
                         
