@@ -8,6 +8,7 @@ import librosa
 from tqdm import tqdm
 
 
+# The following dict tore drivers' and circuits' names and labels
 POLE_DRIVERS = {
     "Lewis Hamilton": 0,
     "Valtteri Bottas": 1,
@@ -23,7 +24,6 @@ POLE_DRIVERS = {
     "Kevin Magnussen": 11,
     "Sergio Pérez": 12,
 }
-
 CIRUCUITS = {
     "Australian": 0,
     "Azerbaijan": 1,
@@ -65,8 +65,12 @@ CIRUCUITS = {
 }
 
 def process_data(save: bool = False) -> dict:
-    random.seed(11)
+    """Returns and optionally saves (in json) a Python dict containing 
+    the mfcc data and labels.
+    """
+    random.seed(11) # reproducibility
 
+    # Set up dict structure
     data = {
         "mfcc": [],
         "year_labels": [],
@@ -77,12 +81,16 @@ def process_data(save: bool = False) -> dict:
         "circuit": [],
         "subsets": [],
     }
+    
+    # Define parameters
     SAMPLE_RATE = 22050
     n_mfcc = 13
     n_fft = 2048
     hop_length = 512
-    expected_num_mfcc_vectors = np.ceil(SAMPLE_RATE / hop_length)
+    signal_len_s = 1    # Be sure to specify the length of the signal in minutes
+    expected_num_mfcc_vectors = np.ceil(SAMPLE_RATE*signal_len_s / hop_length)
     
+    # Iterate through the chunks in each year
     data_path = "Data"
     total_samples = 0
     accepted_samples = 0
@@ -94,11 +102,13 @@ def process_data(save: bool = False) -> dict:
             
             for f in tqdm(filenames):
                 file_path = os.path.join(dirpath, f)
+                # Get signal
                 signal, sr = librosa.load(
                     file_path,
                     sr=SAMPLE_RATE
                 )
-    
+
+                # Process signal with Mel Frequency Cepstral Coefficients
                 mfcc = librosa.feature.mfcc(
                     y=signal,
                     n_fft=n_fft,
@@ -107,30 +117,33 @@ def process_data(save: bool = False) -> dict:
                 )
                 mfcc = mfcc.T.tolist()
                 
+                # Get the driver that corresponds to the signal
                 driver = ""
                 driver_label = -1
                 for d, label in POLE_DRIVERS.items():
                     if d in f:
-                        driver = d
-                        driver_label = label
+                        driver = d      # get name
+                        driver_label = label    # get label to be used in the model
                         break
-                        
+                
+                # Get the circuit that corresponds to the signal
                 circuit = ""
                 circuit_label = -1
                 for c, label in CIRUCUITS.items():
                     if c in f:
-                        circuit = c
-                        circuit_label = label
+                        circuit = c     # get name
+                        circuit_label = label   # get label to be used in the model
                         break
 
+                # If the len of the mfcc is as expected
                 if len(mfcc) == expected_num_mfcc_vectors:
                     total_samples += 1
                     if (driver != "" 
                         and driver_label >= 0 
                         and circuit != "" 
-                        and circuit_label >= 0):
+                        and circuit_label >= 0):    # IF dirver and circuit where identified
                         accepted_samples += 1
-                        n = random.randint(1, 6)
+                        n = random.randint(1, 6)    # Select a random number to set up each subset
                         data["mfcc"].append(mfcc)
                         data["year_labels"].append(int(year) - 2017)
                         data["year"].append(year)
@@ -138,27 +151,33 @@ def process_data(save: bool = False) -> dict:
                         data["driver"].append(driver)
                         data["circuit_labels"].append(circuit_label)
                         data["circuit"].append(circuit)
-                        data["subsets"].append(n)
+                        data["subsets"].append(n)   # Subsets will allow for handy cross validation
                             
     print(f"{accepted_samples}/{total_samples} samples accepted")          
-                        
+    
+    # Save the dict if instructed to                 
     if save:
         with open(f"{data_path}/processed_data.json", "w") as fp:
             json.dump(data, fp, indent=4)
-        
+    
+    # return the dict eitherway
     return data
                         
 
 def get_drivers():
+    """Return a list with the name of the drivers in the data."""
     return list(POLE_DRIVERS.keys())
     
     
 def get_circuits():
-    s = set()
+    """Return a list with the names of the circuits in the data. 
+    Ensuring uniqueness.
+    """
+    s = set()   # Set to unsure uniqueness
     circuit_names = []
     for circuit, label in CIRUCUITS.items():
-        if label not in s:
-            circuit_names.append(circuit)
-            s.add(label)
+        if label not in s:  # if the circuit label, hasn't yet appeared in the set
+            circuit_names.append(circuit)   # add the circuit to the names
+            s.add(label)    # add the label to the set
             
     return circuit_names
