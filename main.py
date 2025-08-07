@@ -2,6 +2,7 @@
 import os
 import random
 import json
+from timeit import default_timer
 
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -61,6 +62,7 @@ def classify_years(data: dict):
     
     X_test = []
     y_test = []
+    training_time = 0
     # Iterate through the subsets in the train subsets
     for i, n in enumerate(list(train_n)):
         print(f"\nSUBSET {i+1}/{len(train_n)}")
@@ -95,7 +97,8 @@ def classify_years(data: dict):
             val_dataset, batch_size=batch_size, shuffle=False
         )
         
-        # 
+        train_start = default_timer()
+        # Train the model
         clf = train_classifier_dataloader(
             model=clf,
             train_dataloader=train_dataloader,
@@ -105,9 +108,17 @@ def classify_years(data: dict):
             optimizer=optimizer, 
             verbose=20,
             early_stop=25,
-            device=device
+            device=device,
+            time=False
         )
-    
+        train_end = default_timer()
+        
+        # Add local training time to the overall training time
+        training_time += (train_end - train_start)
+        
+    # Show total training time to the user
+    print(f"Model took {training_time:.3f} seconds to train",
+          f"with {len(train_n)}-fold cross validation on {device}") 
     # Get test data  
     for i in range(len(data["subsets"])):
         if data["subsets"][i] == test_n:
@@ -126,8 +137,8 @@ def classify_years(data: dict):
         classes=[y for y in range(2017, 2025)],
         type="years",
         loss_fn=loss_fn,
-        save_cm=True,
-        save_clf=True
+        save_cm=False,
+        save_clf=False,
     )
     
 
@@ -169,6 +180,7 @@ def classify_drivers(data: dict):
     
     X_test = []
     y_test = []
+    training_time = 0.0
     # Iterate through train subsets
     for i, n in enumerate(list(train_n)):
         print(f"\nSUBSET {i+1}/{len(train_n)}")
@@ -203,6 +215,7 @@ def classify_drivers(data: dict):
             val_dataset, batch_size=batch_size, shuffle=False
         )
         
+        train_start = default_timer()
         # Train classifier
         clf = train_classifier_dataloader(
             model=clf,
@@ -213,8 +226,17 @@ def classify_drivers(data: dict):
             optimizer=optimizer, 
             verbose=25,
             early_stop=25,
-            device=device
+            device=device,
+            time=False
         )
+        train_end = default_timer()
+        
+        # Add local training time to the overall training time
+        training_time += (train_end - train_start)
+        
+    # Show total training time to the user
+    print(f"Model took {training_time:.3f} seconds to train",
+          f"with {len(train_n)}-fold cross validation on {device}")
     
     # Get test data
     for i in range(len(data["subsets"])):
@@ -234,8 +256,8 @@ def classify_drivers(data: dict):
         classes=drivers,
         type="drivers",
         loss_fn=loss_fn,
-        save_cm=True,
-        save_clf=True
+        save_cm=False,
+        save_clf=False,
     )
 
 
@@ -277,6 +299,7 @@ def classify_circuits(data: dict):
     
     X_test = []
     y_test = []
+    training_time = 0
     # Iterate through train subsets
     for i, n in enumerate(list(train_n)):
         print(f"\nSUBSET {i+1}/{len(train_n)}")
@@ -311,6 +334,7 @@ def classify_circuits(data: dict):
             val_dataset, batch_size=batch_size, shuffle=False
         )
         
+        train_start = default_timer()
         # Train Classfier
         clf = train_classifier_dataloader(
             model=clf,
@@ -321,8 +345,17 @@ def classify_circuits(data: dict):
             optimizer=optimizer, 
             verbose=25,
             early_stop=25,
-            device=device
+            device=device,
+            time=False
         )
+        train_end = default_timer()
+        
+        # Add local training time to the overall training time
+        training_time += (train_end - train_start)
+        
+    # Show total training time to the user
+    print(f"Model took {training_time:.3f} seconds to train",
+          f"with {len(train_n)}-fold cross validation on {device}")
     
     # Get test data
     for i in range(len(data["subsets"])):
@@ -342,8 +375,8 @@ def classify_circuits(data: dict):
         classes=circuits,
         type="circuits",
         loss_fn=loss_fn,
-        save_cm=True,
-        save_clf=True,
+        save_cm=False,
+        save_clf=False,
     )
     
     
@@ -357,7 +390,7 @@ def main():
         data = process_data(True)
     
     # Classify stuff :)
-    classify_drivers(data)
+    classify_years(data)
     
     
 if __name__ == "__main__":

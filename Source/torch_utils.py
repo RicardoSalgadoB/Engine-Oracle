@@ -255,6 +255,7 @@ def test_classifier(
         save_clf (bool, optional): Whether to save the model state dict or not. 
             Default to False.
     """
+    clf.eval()
     y_logits = clf(X_test)
     y_probs = torch.softmax(y_logits, dim=1)
     y_pred = torch.argmax(y_probs, dim=1).type(torch.float)
@@ -295,7 +296,8 @@ def test_classifier(
         confusion_matrix=cm, 
         display_labels=classes
     )
-    cm_display.plot(cmap=plt.cm.Blues)
+    fig, ax = plt.subplots(figsize=(10, 8))
+    cm_display.plot(cmap=plt.cm.Blues, ax=ax)
     plt.title(f"{type} Test Confussion Matrix")
     plt.xticks(rotation=60)
     

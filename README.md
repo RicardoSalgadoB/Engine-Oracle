@@ -4,11 +4,13 @@ A *Deep Learning Audio Classification* Project based on F1 Engine Data.
 
 ## Brief Technical Overview
 
+This project uses Formula 1 engine audio data from Poles between 2017 and 2024 to predict the *year* the data comes from, which *driver* was in the car and which *circuit* was he driving. This is achieved with the aid of the audio preprocessing named **Librosa** and the implementation of a *Neural Network Multiclass Classifier* through **PyTorch**. Several techniques were used to achieve this, but the most significan are *Mel Frequency Cepstral Coefficients*, *DataLoaders* and *Cross Validation*.
+
 ## Introduction
 
 First and foremost, this project is not in the same vein of my previous one (aka. [StreamStats](https://github.com/RicardoSalgadoB/streamstats)). To begin with I don't really see any production use of what I've created here, that is why I didn't containerize it. I also tried to keep AI assistance as far away as I could, that meant  I had to follow the steps described in some online articles which I will promptly link in the following sections.
 
-Overall, this is an Deep Learning project that seeks to analyze and classify some motorsport data. In order to do so it makes use of several libraries (**PyTorch**, **Librosa**, **Numpy**, ...) and many other techniques (*Short Time Fourier Transform*, *Mel Frequency Cepstral Coefficients*, *DataLoaders*, *Cross validation*, ...). I will describe in the following sections.
+Overall, this is an Deep Learning project that seeks to analyze and classify some motorsport data. In order to do so it makes use of several libraries (**PyTorch**, **Librosa**, **Numpy**, ...) and many other techniques (*Short Time Fourier Transform*, *Mel Frequency Cepstral Coefficients (MFCC)*, *DataLoaders*, *Cross validation*, ...). I will describe in the following sections.
 
 The purpose of this project is to showcase my Deep Learning skills and my capacity to build reliable models from raw audio data.
 
@@ -67,40 +69,111 @@ At the start I was only testing what *DataLoaders* could do, but they ended up b
 
 ### 5) Cross Validation
 
+This was the final step of the project. It began when I realized that the training process could use a bit more data. It tried to follow only articles, but I ended up doing my own thing (aka. manually assigning subsets).
 
+All things said, there are some important considerations in regards with cross validation. First, the validation metrics during training are a mirage as the model has been trained on the validation subset previously. Second, I still need to keep test data separated which means that not all training data is used.
 
-...
-PyTorch
-DataLoaders
-Mel Frecuency Cepstral Coeficients
+Overall, cross validation had a positive impact in the results. This was particullarly significant wiht the *Driver Classifier* ramping up performances from 93 % to around 97 % as seen in the results section.
 
 ## Results
 
 **Years**
-*Cross Entropy Loss*: 0.115874
-*Accuracy*: 96.7 %
-*Recall*: 96.9 %
-*Precision*: 96.6 %
-*F1-Score*: 96.7 %
+* *Cross Entropy Loss*: 0.115874
+* *Accuracy*: 96.7 %
+* *Recall*: 96.9 %
+* *Precision*: 96.6 %
+* *F1-Score*: 96.7 %
+* *Training Time*: 9:56.038
 
 **Drivers**
-*Cross Entropy Loss*: 0.152287
-*Accuracy*: 96.3 %
-*Recall*: 96.0 %
-*Precision*: 97.8 %
-*F1-Score*: 96.8 %
+* *Cross Entropy Loss*: 0.152287
+* *Accuracy*: 96.3 %
+* *Recall*: 96.0 %
+* *Precision*: 97.8 %
+* *F1-Score*: 96.8 %
+* *Training Time*: 6:31.825
 
 **Circuits**
-*Cross Entropy Loss*: 0.393853
-*Accuracy*: 88.2 %
-*Recall*: 85.1 %
-*Precision*: 90.3 %
-*F1-Score*: 86.9 %
+* *Cross Entropy Loss*: 0.393853
+* *Accuracy*: 88.2 %
+* *Recall*: 85.1 %
+* *Precision*: 90.3 %
+* *F1-Score*: 86.9 %
+* *Training Time*: 6:57.533
+
+**Hardware**
+
+I ran this on my local, real, physical laptop, which is a *M4 Macbook Pro* with 14 cores.
 
 ## How to use
 
+***WARNING:*** Don't train the model if you think that your equipement will have problems. Even with my *M4*, there came a time when the model output just zeroed out. Either that or the model began predicting all poles belong to Hamilton, I would indeed expect Apple Silicon to be *teamLH*.
+
+Without further ado, here is what you have to do to run this project:
+
+1. Clone this repo
+```sh
+git clone [https://github/RicardoSalgadoB/EngineOracle.git](https://github/RicardoSalgadoB/EngineOracle.git)
+cd EngineOracle
+```
+
+2. Create a virtual environment
+With *venv*
+```sh
+python -m venv venv
+source venv/bin/activate
+```
+or *conda*
+```sh
+conda create --name Engine-Oracle
+conda activate Engine-Oracle
+```
+
+3. Install python dependencies
+```sh
+pip install -r requirements.txt
+```
+
+4. Run the entrypoint script. *Shell* only works on UNIX systems so... yeah. You can create a Vitual Machine if you want, is not a bad skill to have either way.
+
+By executing this file you will get the audio data in your machine, already split into trunks.
+
+Sorry for giving you an `entrypoint.sh` as if you were a Docker daemon.
+```sh
+chmod +x entrypoint.sh
+sh entrypoint.sh
+```
+
+5. Either do `main.py`, `predict.py` or `test.py` depending on your desires.
+
+*Main* will train the models again and test them.
+```sh
+python main.py
+```
+
+*Test* will test an existing model, but only that.
+```sh
+python test.py
+```
+
+*Predict* will make a year, driver and cicuti prediction on a file name specified in the code
+```sh
+python predict.py
+```
+
+*Generate images* use this to regenerate images, they are already generated though.
+```sh
+python generate_images
+```
+
+
 ## Conclusion
 
+The main limitation of this project is that it lacks any real world applicability. In other words, it is but a mere toy. I had chance to make a more useful project (in ), but I just didn't feel passionate about it. Even with that, I am a bit of a F1 purist, I don't think the model would be more valuable than the insights the mechanics and drivers can bring to the table nor would I like to see the massive use of this ML/DL models in the sport.
+
+Another imporovement would be more finetuning of the model architectures. However, I believe this is good enough, as I don't want this project to focus on the results as much as the techniques I used to achieve those results. Though, I wouldn't mind exploration other ways to do circuit classification later on.
+
+Concluding, I am satisfied with this project, could be more though. I did learning a lot about audio signal processing (the existing of a library like *Librosa* is extremely useful for audio processing) and made a solid show case of my deep learning skills (I'm might still market this as an ML project, as most skills are transferable and it is just a better strategy being fair).
 
 ## Contact
 Ricardo Salgado Benítez - [ricardosabe2018@gmail.com] - [https://www.linkedin.com/in/ricardosalgadob/]
