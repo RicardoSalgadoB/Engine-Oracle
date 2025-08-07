@@ -1,6 +1,6 @@
 # Engine Oracle
 
-A *Deep Learning Audio Classification* Project based on F1 Engine Data.
+A *Deep Learning / Machine Learning Audio Classification* Project based on F1 Engine Data.
 
 ## Brief Technical Overview
 
@@ -85,6 +85,8 @@ Overall, cross validation had a positive impact in the results. This was particu
 * *F1-Score*: 96.7 %
 * *Training Time*: 9:56.038
 
+The model struggles the most with years 2020 and 2021, which is not a surprise. Due to the pandemic, 2021 new regulations where delayed by a year and therefore the 2021 cars were basically the same as those in 2020.
+
 **Drivers**
 * *Cross Entropy Loss*: 0.152287
 * *Accuracy*: 96.3 %
@@ -92,6 +94,8 @@ Overall, cross validation had a positive impact in the results. This was particu
 * *Precision*: 97.8 %
 * *F1-Score*: 96.8 %
 * *Training Time*: 6:31.825
+
+As seen in the confussion matrix, most of the unreliability occurs between Lewis Hamiliton and Valtteri Bottas. This to be expected as most of their poles come from when they were teammates. This means that the classifier struggles a bit when the drivers come from the same team, but particullarly with these 2 (maybe, they have a similar diriving style).
 
 **Circuits**
 * *Cross Entropy Loss*: 0.393853
