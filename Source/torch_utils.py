@@ -307,4 +307,4 @@ def test_classifier(
 
     # Save the model if variables says so
     if save_clf:
-        torch.save(clf.state_dict(), f"{type}_clf_state_dict.pth")
+        torch.save(clf.state_dict(), f"Models/{type}_clf_state_dict.pth")

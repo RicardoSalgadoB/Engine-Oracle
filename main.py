@@ -1,4 +1,5 @@
 # IMPORTS
+import os
 import random
 import json
 
@@ -125,6 +126,8 @@ def classify_years(data: dict):
         classes=[y for y in range(2017, 2025)],
         type="years",
         loss_fn=loss_fn,
+        save_cm=True,
+        save_clf=True
     )
     
 
@@ -230,7 +233,9 @@ def classify_drivers(data: dict):
         y_test=y_test,
         classes=drivers,
         type="drivers",
-        loss_fn=loss_fn
+        loss_fn=loss_fn,
+        save_cm=True,
+        save_clf=True
     )
 
 
@@ -336,15 +341,20 @@ def classify_circuits(data: dict):
         y_test=y_test,
         classes=circuits,
         type="circuits",
-        loss_fn=loss_fn
+        loss_fn=loss_fn,
+        save_cm=True,
+        save_clf=True,
     )
     
     
 def main():
     # Get the data dictionary
-    #data = process_data(True)
-    with open("Data/processed_data.json", "r") as fp:
-        data = json.load(fp)
+    process_data_path = "Data/processed_data.json"
+    if os.path.exists(process_data_path):
+        with open("Data/processed_data.json", "r") as fp:
+            data = json.load(fp)
+    else:
+        data = process_data(True)
     
     # Classify stuff :)
     classify_drivers(data)
