@@ -11,17 +11,17 @@ import torch
 from torch import nn
 from torch.utils.data import TensorDataset, DataLoader
 
-from Source.models.classifiers import (
+from Utils.models.classifiers import (
     classifier_year, 
     classifier_driver,
     classifier_circuit,
 )
-from Source.torch_utils import (
+from Utils.torch_utils import (
     train_classifier,
     train_classifier_dataloader, 
     test_classifier
 )
-from Source.process_data import process_data, get_drivers, get_circuits
+from Utils.process_data import process_data, get_drivers, get_circuits
 
 
 def classify_years(data: dict):
@@ -263,7 +263,7 @@ def classify_drivers(data: dict):
 
 def classify_circuits(data: dict):
     """This funcition trains a circuit classifier and tests it, 
-    optionally saving teh resulting confussion matrix.
+    optionally saving the resulting confussion matrix.
 
     Args:
         data (dict): A dictionary wiht the MFCC data and labels

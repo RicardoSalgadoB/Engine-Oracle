@@ -4,9 +4,9 @@ import json
 import torch
 from torch import nn
 
-from Source.process_data import process_data, get_drivers, get_circuits
-from Source.torch_utils import test_classifier
-from Source.models.classifiers import (
+from Utils.process_data import process_data, get_drivers, get_circuits
+from Utils.torch_utils import test_classifier
+from Utils.models.classifiers import (
     classifier_driver, 
     classifier_circuit, 
     classifier_year

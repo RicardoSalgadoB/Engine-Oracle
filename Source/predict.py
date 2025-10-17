@@ -7,11 +7,11 @@ from tqdm import tqdm
 
 import torch
 
-from Source.process_data import (
+from Utils.process_data import (
     get_circuits,
     get_drivers,
 )
-from Source.models.classifiers import (
+from Utils.models.classifiers import (
     classifier_circuit,
     classifier_driver,
     classifier_year,
@@ -69,7 +69,7 @@ def get_mfccs(file_name: str) -> list:
                         
 
 def main():
-    file_name = "Max Verstappen's Pole Lap | 2022 Emilia Romagna Grand Prix | Pirelli"
+    file_name = "Valtteri Bottas' Onboard Pole Lap | 2019 United States Grand Prix | Pirelli"
     mfccs = get_mfccs(file_name)
                         
     if not mfccs:
@@ -89,7 +89,7 @@ def main():
     clf_drivers.load_state_dict(torch.load("Models/drivers_clf_state_dict.pth"))
     clf_circuits.load_state_dict(torch.load("Models/circuits_clf_state_dict.pth"))
     
-    # set modesl to eval modes for better performance
+    # Set models to eval modes for better performance
     clf_years.eval()
     clf_drivers.eval()
     clf_circuits.eval()
@@ -99,7 +99,7 @@ def main():
     driver_preds = []
     circuit_preds = []
     
-    # Iterat through the stored MFCCs
+    # Iterate through the stored MFCCs
     for mfcc in mfccs:
         # Pass the data from a list of lists to a tensor
         # Need to unflatten it or else the model internal flattening does not work
@@ -133,7 +133,7 @@ def main():
     # Print the resulting predictions
     print(f"Predicted year: {years[year_index]}")
     print(f"Predicted driver: {drivers[driver_index]}")
-    print(f"Predicted cirucit: {circuits[circuit_index]}")
+    print(f"Predicted circuit: {circuits[circuit_index]}")
     
     
 if __name__ == "__main__":
