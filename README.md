@@ -174,7 +174,7 @@ python generate_images
 
 Well it is helping me wrap the model so that I can containeraize it and spin up through an AWS ECS instances.
 
-***Sorry... An AWS ECS instance***
+***Sorry... An AWS ECS instance?***
 
 Of course. Did you though that I was just gonna put the project like this on my resume and apply to 25-ish internships, when I could have easily increased my chances by 10% (lets hope) with less than a day of work.
 
