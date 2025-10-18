@@ -7,6 +7,9 @@ WORKDIR /code
 # Copy requirements
 COPY  ./requirements.txt /code/requirements.txt
 
+# Install FFMPEG
+RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+
 # Install requirements
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
@@ -17,6 +20,9 @@ COPY ./App /code/App
 COPY ./Utils /code/Utils
 COPY ./Source /code/Source
 
+# Chief among those models
+COPY ./Models /code/Models
+
 # Run the API
-CMD [ "uvicorn", "App.app:app" ]
+CMD [ "python", "-m", "App.app" ]
     # Jaja so many apps, yeah try doing it yourself

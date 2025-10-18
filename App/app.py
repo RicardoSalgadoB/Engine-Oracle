@@ -2,6 +2,7 @@
 import os
 import torch
 import librosa
+import uvicorn
 import numpy as np
 from io import BytesIO
 from pydub import AudioSegment
@@ -30,9 +31,9 @@ clf_drivers = classifier_driver(input_size, len(drivers))
 clf_circuits = classifier_circuit(input_size, len(circuits))
 
     # Load the state dictionaries
-clf_years.load_state_dict(torch.load("Models/years_clf_state_dict.pth"))
-clf_drivers.load_state_dict(torch.load("Models/drivers_clf_state_dict.pth"))
-clf_circuits.load_state_dict(torch.load("Models/circuits_clf_state_dict.pth"))
+clf_years.load_state_dict(torch.load("Models/years_clf_state_dict.pth", map_location="cpu"))
+clf_drivers.load_state_dict(torch.load("Models/drivers_clf_state_dict.pth", map_location="cpu"))
+clf_circuits.load_state_dict(torch.load("Models/circuits_clf_state_dict.pth", map_location="cpu"))
 
     # set models to eval modes for better performance
 clf_years.eval()
@@ -195,3 +196,6 @@ async def predict_file(audio_file: Annotated[UploadFile, File(description="An au
         "Predicted driver": drivers[driver_index],
         "Predicted circuit": circuits[circuit_index]
     }
+    
+if __name__ == "__main__":
+    uvicorn.run("App.app:app", host="0.0.0.0", port=8000, log_level="info")

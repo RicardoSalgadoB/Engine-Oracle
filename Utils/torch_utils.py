@@ -240,6 +240,7 @@ def test_classifier(
     loss_fn: nn.Module,
     save_cm: bool = False,
     save_clf: bool = False,
+    device: str = "cpu"
 ) -> None:
     """Train a classifier model given the features and labels of a test dataset.
 
@@ -265,17 +266,17 @@ def test_classifier(
         task='multiclass', 
         average='macro', 
         num_classes=len(classes)
-    ).to('mps')
+    ).to(device)
     prec = Precision(
         task='multiclass', 
         average='macro', 
         num_classes=len(classes)
-    ).to('mps')
+    ).to(device)
     f1 = F1Score(   # Not related to Formula 1
         task='multiclass', 
         average='macro', 
         num_classes=len(classes)
-    ).to('mps')
+    ).to(device)
     
     # Get and print metrics
     final_loss = loss_fn(y_logits, y_test)

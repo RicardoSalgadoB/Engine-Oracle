@@ -1,4 +1,5 @@
 import requests
+from time import time
 
 def audio_file():
     url = "http://127.0.0.1:8000/predict/file"
@@ -6,7 +7,18 @@ def audio_file():
     
     with open(file_path, 'rb') as f:
         files = {"audio_file": ("sample.m4a", f, "audio/m4a")}
+        t1 = time()
         resp = requests.post(url=url, files=files)
+        t2 = time()
+    
+    print(resp.status_code)
+    print(resp.json())
+    print(t2-t1)
+    
+def status():
+    url = "http://127.0.0.1:8000"
+    resp = requests.get(url)
+    print(resp.status_code)
     print(resp.json())
     
 if __name__ == "__main__":
