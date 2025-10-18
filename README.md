@@ -1,6 +1,6 @@
 # Engine Oracle
 
-A *Deep Learning / Machine Learning Audio Classification* Project based on F1 Engine Data.
+An AWS Deployed *Deep Learning / Machine Learning Audio Classification* Project based on F1 Engine Data.
 
 ## Brief Technical Overview
 
@@ -170,6 +170,20 @@ python predict.py
 python generate_images
 ```
 
+## Wait... What is Fast API doing here?
+
+Well it is helping me wrap the model so that I can containeraize it and spin up through an AWS ECS instances.
+
+***Sorry... An AWS ECS instance***
+
+Of course. Did you though that I was just gonna put the project like this on my resume and apply to 25-ish internships, when I could have easily increased my chances by 10% (lets hope) with less than a day of work.
+
+Anyway, here are the API endpoints:
+
+* `/`: Health Check.
+* `/info`: Some general info about the service.
+* `/predict/name`: Submit any of the video titles (playlists included above) as a query parameter and the model will tell you the info (*isn't the driver, year and circuit in the video title?*... ehh, perhaps).
+* `/predict/file`: Submit the binaries serialized audio file through a POST request and wait for the model to return the predictions.
 
 ## Conclusion
 
